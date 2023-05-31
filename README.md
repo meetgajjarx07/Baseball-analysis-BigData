@@ -1,7 +1,7 @@
-# Baseball-analysis-BigData
+
 
 <div align="center">
-<h1 align="center">DataMorph - GUI Based Machine Learning app</h3>
+<h1 align="center">Baseball-analysis-BigData
 
 [![Languages][language-shield]][language-url]
 [![Contributors][contri-shield]][contri-url]
