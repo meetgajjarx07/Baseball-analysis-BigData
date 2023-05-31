@@ -1,0 +1,51 @@
+1. AllLeague = load 'BdaProject/matchdata/*EV{A,N}' using PigStorage(',') as(Allteams:chararray); 
+
+2. AmericanLeague = load 'BdaProject/matchdata/*EVA' using PigStorage(',') as (Americanteams:chararray);
+
+3. NationalLeague = load 'BdaProject/matchdata/*EVN' using PigStorage(',') as (Nationalteams:chararray);
+
+4. AllLeagueID = filter AllLeague by Allteams MATCHES 'id';
+
+5. AmericanLeagueID = filter AmericanLeague by Americanteams MATCHES 'id';
+
+6. NationalLeagueID = filter NationalLeague by Nationalteams MATCHES 'id';
+
+7.AllLeagueGrp = group AllLeagueID ALL;
+
+8. AmericanLeagueGrp = group AmericanLeagueID ALL;
+
+9.NationalLeagueGrp = group NationalLeagueID ALL;
+
+10. AllLeagueCount = foreach AllLeagueGrp generate COUNT(AllLeagueID) as TotalMatchPlayed;
+
+11. AmericanLeagueCount = foreach AmericanLeagueGrp generate COUNT(AmericanLeagueID) as TotalAmercLmatches;
+
+12. NationalLeagueCount = foreach NationalLeagueGrp generate COUNT(NationalLeagueID) as TotalNationalLmatches;
+
+13. LDataAll = foreach AllLeagueCount generate TotalMatchPlayed,AmericanLeagueCount.TotalAmercLmatches,NationalLeagueCount.TotalNationalLmatches;
+
+14.store LDataAll INTO 'BdaProject/matchdata/MatchCount' using PigStorage(',');
+
+15. dump LDataAll;
+
+16. AllIDName = LOAD 'BdaProject/matchdata/*.EV{A,N}' using PigStorage(',') as
+(type:chararray,id:chararray,name:chararray);
+
+17. Athletes = filter AllIDName by type MATCHES 'start' OR type MATCHES 'sub';
+
+18. GenerateIDandName = foreach Athletes generate id,name;
+
+19. DistiData = DISTINCT GenerateIDandName;
+
+20. FilterData = order DistiData by id;
+
+21. store FilterData INTO 'BdaProject/matchdata/IDandNameRelation' using
+PigStorage(',');
+
+22. hadoop fs -ls BdaProject/matchdata/MatchCount
+
+23. hadoop fs -cat BdaProject/matchdata/MatchCount/part-r-00000
+
+24. hadoop fs -ls BdaProject/matchdata/IDandNameRelation
+
+25. hadoop fs -cat BdaProject/matchdata/IDandNameRelation/part-r-00000
